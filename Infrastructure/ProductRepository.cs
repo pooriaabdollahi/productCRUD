@@ -24,7 +24,7 @@ namespace Infrastructure
             try
             {
                 _dboContext.Add(product);
-
+                _dboContext.SaveChanges();
                 return product;
             }
             catch (Exception ex)
@@ -39,6 +39,7 @@ namespace Infrastructure
             {
                 _dboContext.Remove(product);
 
+                _dboContext.SaveChanges();
                 return product;
             }
             catch (Exception ex)
@@ -80,7 +81,7 @@ namespace Infrastructure
             try
             {
                 _dboContext.Update(product);
-
+                _dboContext.SaveChanges();
                 return product;
             }
             catch (Exception ex)

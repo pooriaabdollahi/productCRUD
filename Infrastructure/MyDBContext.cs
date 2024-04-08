@@ -6,7 +6,11 @@ namespace Infrastructure;
 
 internal class MyDBContext : DbContext
 {
-    
+    static string connectionString = "Server=localhost,1435;Database=master;User Id=sa;Password=Myp@ssword1;TrustServerCertificate=True;";
+
+    public MyDBContext() : base (GetOptions()) { }
+    public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
+    { }
     public DbSet<ProductModel> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,7 +24,7 @@ internal class MyDBContext : DbContext
         }
 
     }
-    private static DbContextOptions GetOptions(string connectionString)
+    private static DbContextOptions GetOptions()
     {
         return SqlServerDbContextOptionsExtensions.UseSqlServer(new DbContextOptionsBuilder(), connectionString).Options;
     }

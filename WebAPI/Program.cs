@@ -8,7 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigurePersistanceServices(builder.Configuration);
-
+builder.Services.AddControllers();
 builder.Host.UseSerilog((context, configuration) =>
 configuration.ReadFrom.Configuration(context.Configuration));
 
@@ -22,7 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.MapControllers();
 app.UseSerilogRequestLogging();
 
 app.Run();
