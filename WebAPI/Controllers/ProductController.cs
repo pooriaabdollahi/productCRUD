@@ -3,12 +3,14 @@ using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController : Controller
+    public class ProductController : ControllerBase
     {
        
         // GET: ProductController/Create
@@ -20,39 +22,54 @@ namespace WebAPI.Controllers
         [HttpPost("Create")]
         public ActionResult Create(CreateProductModel product)
         {
+
+            var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "user");
             var config = new MapperConfiguration(cfg => cfg.CreateMap<CreateProductModel, ProductModel>());
             var mapper = config.CreateMapper();
             ProductModel productModel = mapper.Map<ProductModel>(product);
-            productModel.Creator = "1";
+            productModel.Creator = currentUser.Value;
              
             var result = _productRepository.Create(productModel);
             return new JsonResult(result);
         }
         [HttpGet("GetAll")]
+        [AllowAnonymous]
         public ActionResult<List<ProductModel>> getAll()
         {
             var result = _productRepository.GetAll();
             return new JsonResult(result);
         }
         [HttpPost("Filter")]
+        [AllowAnonymous]
         public ActionResult<List<ProductModel>> getbyFilter(ProductFilterModel filters)
         {
             var result = _productRepository.GetByFilter(filters);
             return new JsonResult(filters);
         }
         [HttpPost("Update")]
+        [Authorize]
         public ActionResult<ProductModel> Update(ProductModel product)
         {
+            var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "user");
+            if (currentUser?.Value != product.Creator)
+            {
+                return new JsonResult("Not Authorized");
+            }
             var result =_productRepository.Update(product);
             return new JsonResult(result);
         }
         [HttpPost("Delete")]
+        [Authorize]
         public ActionResult<ProductModel> Delete(ProductModel product)
         {
+            var currentUser = HttpContext.User.Claims.FirstOrDefault(x=>x.Type=="user");
+            if (currentUser?.Value != product.Creator)
+            {     
+                return new JsonResult("Not Authorized");
+            }
             var result = _productRepository.Delete(product);
             return new JsonResult(result);
         }
-        // GET: ProductController/Edit/5
        
     }
 }
