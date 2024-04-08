@@ -12,6 +12,6 @@ namespace Domain.Models
         public DateTime ProduceDate { get; set; }
         public int ManufacturePhone { get; set; }
         public string ManufactureEmail {  get; set; }
-        public Boolean IsAvailable { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }

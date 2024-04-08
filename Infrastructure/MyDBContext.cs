@@ -1,14 +1,12 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-namespace productCrud.Infrastructure;
+namespace Infrastructure;
 
 
-internal class MyContext : DbContext
+internal class MyDBContext : DbContext
 {
-    static string connectionString = "Server=localhost,1435;Database=YourDatabaseName;User Id=dbo;Password=Myp@ssword1;";
-    public MyContext() : base(GetOptions(connectionString))
-    { }
+    
     public DbSet<ProductModel> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
