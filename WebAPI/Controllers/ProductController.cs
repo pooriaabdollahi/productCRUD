@@ -20,10 +20,12 @@ namespace WebAPI.Controllers
             _productRepository = productRepository;
         }
         [HttpPost("Create")]
+        [Authorize]
         public ActionResult Create(CreateProductModel product)
         {
-
+            
             var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "user");
+            if (currentUser == null) {return Unauthorized();}
             var config = new MapperConfiguration(cfg => cfg.CreateMap<CreateProductModel, ProductModel>());
             var mapper = config.CreateMapper();
             ProductModel productModel = mapper.Map<ProductModel>(product);
@@ -53,7 +55,7 @@ namespace WebAPI.Controllers
             var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "user");
             if (currentUser?.Value != product.Creator)
             {
-                return new JsonResult("Not Authorized");
+                return Unauthorized();
             }
             var result =_productRepository.Update(product);
             return new JsonResult(result);
@@ -64,8 +66,8 @@ namespace WebAPI.Controllers
         {
             var currentUser = HttpContext.User.Claims.FirstOrDefault(x=>x.Type=="user");
             if (currentUser?.Value != product.Creator)
-            {     
-                return new JsonResult("Not Authorized");
+            {
+                return Unauthorized();
             }
             var result = _productRepository.Delete(product);
             return new JsonResult(result);
